@@ -21,6 +21,45 @@ module.exports = {
             limit: 20480
           }
         }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: 'fonts/'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1
+            }
+          },
+          'postcss-loader'
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              modules: true
+            }
+          },
+          'postcss-loader',
+          'sass-loader'
+        ]
       }
     ]
   }

@@ -1,8 +1,8 @@
-function b () {
+function createContent () {
   var dom = document.getElementById('root')
   var content = document.createElement('div')
   content.innerText = 'content'
   dom.appendChild(content)
 }
 
-export default b
+export default createContent

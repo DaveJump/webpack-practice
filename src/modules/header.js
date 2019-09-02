@@ -1,8 +1,8 @@
-function a () {
+function createHeader () {
   var dom = document.getElementById('root')
   var header = document.createElement('div')
   header.innerText = 'header'
   dom.appendChild(header)
 }
 
-export default a
+export default createHeader
