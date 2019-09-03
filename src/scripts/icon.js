@@ -1,4 +1,4 @@
-import style from './icon.scss'
+import style from 'styles/icon.scss'
 
 function createIcon () {
   var imgNode = document.createElement('span')

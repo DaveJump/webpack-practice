@@ -1,13 +1,24 @@
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'development',
+  devtool: 'cheap-module-eval-source-map',
   entry: {
     main: './src/index.js'
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: '[name]_[hash].js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
+  },
+  devServer: {
+    contentBase: './dist',
+    open: true,
+    hot: true,
+    hotOnly: true
   },
   module: {
     rules: [
@@ -62,5 +73,20 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  resolve: {
+    alias: {
+      images: path.resolve(__dirname, 'src/assets/images'),
+      fonts: path.resolve(__dirname, 'src/assets/fonts'),
+      styles: path.resolve(__dirname, 'src/assets/styles'),
+      scripts: path.resolve(__dirname, 'src/scripts')
+    }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new CleanWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ]
 }

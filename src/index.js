@@ -1,9 +1,12 @@
-import createHeader from './modules/header'
-import createContent from './modules/content'
-import createIcon from './modules/icon'
-import style from './modules/icon.scss'
-import img from './modules/icon.png'
-import './fonts/iconfont.css'
+import createHeader from 'scripts/header'
+import createContent from 'scripts/content'
+import createIcon from 'scripts/icon'
+import placeholder from 'scripts/placeholder'
+import counter from 'scripts/counter'
+
+import style from 'styles/icon.scss'
+import img from 'images/icon.png'
+import 'fonts/iconfont.css'
 
 createHeader()
 createContent()
@@ -18,3 +21,14 @@ var textNode = document.createElement('i')
 textNode.style.fontSize = '50px'
 textNode.classList.add('iconfont', 'iconemoji-')
 document.body.appendChild(textNode)
+
+counter()
+placeholder()
+
+// update handler of HMR (js)
+if (module.hot) {
+  module.hot.accept('scripts/placeholder', function () {
+    console.log('Accepting the updated placeholder module!!!')
+    placeholder()
+  })
+}
