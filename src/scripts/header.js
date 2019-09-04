@@ -1,6 +1,6 @@
-function createHeader () {
-  var dom = document.getElementById('root')
-  var header = document.createElement('div')
+const createHeader = () => {
+  let dom = document.getElementById('root')
+  let header = document.createElement('div')
   header.innerText = 'header'
   dom.appendChild(header)
 }

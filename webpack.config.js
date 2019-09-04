@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const webpack = require('webpack')
 
+const outputPath = path.resolve(__dirname, 'dist')
+
 module.exports = {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
@@ -11,17 +13,24 @@ module.exports = {
   },
   output: {
     filename: '[name]_[hash].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: outputPath,
     publicPath: '/'
   },
   devServer: {
-    contentBase: './dist',
+    contentBase: outputPath,
     open: true,
     hot: true,
     hotOnly: true
   },
   module: {
     rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
       {
         test: /\.(png|jpg|gif)$/,
         use: {
@@ -86,7 +95,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html'
     }),
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({
+      dry: false
+    }),
     new webpack.HotModuleReplacementPlugin()
   ]
 }

@@ -1,8 +1,10 @@
-export default function placeholder () {
-  var prevHolder = document.getElementById('holder')
+const placeholder = () => {
+  let prevHolder = document.getElementById('holder')
   prevHolder && prevHolder.remove()
-  var holder = document.createElement('div')
+  let holder = document.createElement('div')
   holder.setAttribute('id', 'holder')
   holder.innerText = 4800
   document.body.appendChild(holder)
 }
+
+export default placeholder 

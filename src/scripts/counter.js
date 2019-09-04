@@ -1,10 +1,10 @@
-export default function counter () {
-  var count = 0
-  var trigger = document.createElement('button')
-  var text = document.createElement('span')
+const counter = () => {
+  let count = 0
+  let trigger = document.createElement('button')
+  let text = document.createElement('span')
   trigger.innerText = 'Add'
   text.innerText = count
-  function clickHandler () {
+  const clickHandler = () => {
     count = count + 1
     text.innerText = count
   }
@@ -13,3 +13,5 @@ export default function counter () {
   document.body.appendChild(trigger)
   document.body.appendChild(text)
 }
+
+export default counter

@@ -8,16 +8,19 @@ import style from 'styles/icon.scss'
 import img from 'images/icon.png'
 import 'fonts/iconfont.css'
 
+import React from 'react'
+import ReactDom from 'react-dom'
+
 createHeader()
 createContent()
 createIcon()
 
-var imgNode = document.createElement('img')
+let imgNode = document.createElement('img')
 imgNode.src = img
 imgNode.classList.add(style['img-icon'])
 document.body.appendChild(imgNode)
 
-var textNode = document.createElement('i')
+let textNode = document.createElement('i')
 textNode.style.fontSize = '50px'
 textNode.classList.add('iconfont', 'iconemoji-')
 document.body.appendChild(textNode)
@@ -32,3 +35,10 @@ if (module.hot) {
     placeholder()
   })
 }
+class App extends React.Component {
+  render () {
+    return <div style={{color: 'red'}}>Hello React!</div>
+  }
+}
+
+ReactDom.render(<App />, document.getElementById('react-root'))

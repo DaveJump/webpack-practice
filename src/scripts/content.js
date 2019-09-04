@@ -1,6 +1,6 @@
-function createContent () {
-  var dom = document.getElementById('root')
-  var content = document.createElement('div')
+const createContent = () => {
+  let dom = document.getElementById('root')
+  let content = document.createElement('div')
   content.innerText = 'content'
   dom.appendChild(content)
 }
