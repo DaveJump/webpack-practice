@@ -1,26 +1,18 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const webpack = require('webpack')
+const resolve = function (pattern) {
+  return path.resolve(__dirname, pattern)
+}
+const outputPath = resolve('../dist')
 
-const outputPath = path.resolve(__dirname, 'dist')
-
-module.exports = {
-  mode: 'development',
-  devtool: 'cheap-module-eval-source-map',
+const configCommon = {
   entry: {
-    main: './src/index.js'
+    main: resolve('../src/index.js')
   },
   output: {
-    filename: '[name]_[hash].js',
+    filename: '[name].js',
     path: outputPath,
-    publicPath: '/'
-  },
-  devServer: {
-    contentBase: outputPath,
-    open: true,
-    hot: true,
-    hotOnly: true
+    publicPath: './'
   },
   module: {
     rules: [
@@ -85,19 +77,45 @@ module.exports = {
   },
   resolve: {
     alias: {
-      images: path.resolve(__dirname, 'src/assets/images'),
-      fonts: path.resolve(__dirname, 'src/assets/fonts'),
-      styles: path.resolve(__dirname, 'src/assets/styles'),
-      scripts: path.resolve(__dirname, 'src/scripts')
+      images: resolve('../src/assets/images'),
+      fonts: resolve('../src/assets/fonts'),
+      styles: resolve('../src/assets/styles'),
+      scripts: resolve('../src/scripts')
     }
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html'
-    }),
-    new CleanWebpackPlugin({
-      dry: false
-    }),
-    new webpack.HotModuleReplacementPlugin()
-  ]
+      template: resolve('../src/index.html')
+    })
+  ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        antd: {
+          test: module => /antd|ant-design/g.test(module.context),
+          chunks: 'initial',
+          name: 'antd-common',
+          priority: 10
+        },
+        react: {
+          test: module => /react/g.test(module.context),
+          chunks: 'initial',
+          name: 'react-common',
+          priority: 10
+        },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: 'initial',
+          name: 'vendors',
+          priority: 2
+        }
+      }
+    },
+    runtimeChunk: 'single'
+  }
+}
+
+module.exports = {
+  outputPath,
+  configCommon
 }

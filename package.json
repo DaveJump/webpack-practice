@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js",
-    "watch": "webpack --config webpack.config.js --watch",
-    "start": "webpack-dev-server",
+    "build": "webpack --config build/webpack.prod.js",
+    "dev-build": "webpack --config build/webpack.dev.js",
+    "start": "webpack-dev-server --config build/webpack.dev.js",
     "serve": "node server.js",
     "babel": "babel src/babel-test.js -o dist/compiled.js"
   },
@@ -16,13 +16,17 @@
   "dependencies": {
     "@babel/runtime": "^7.5.5",
     "@babel/runtime-corejs3": "^7.5.5",
+    "antd": "^3.23.1",
     "core-js": "3",
+    "lodash": "^4.17.15",
     "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "react-dom": "^16.9.0",
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
@@ -41,11 +45,16 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",
     "webpack-dev-middleware": "^3.7.0",
-    "webpack-dev-server": "^3.8.0"
+    "webpack-dev-server": "^3.8.0",
+    "webpack-merge": "^4.2.2"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
+  ],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
   ]
 }

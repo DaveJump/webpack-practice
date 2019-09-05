@@ -1,25 +1,25 @@
 // import "core-js/stable";
 // import "regenerator-runtime/runtime";
 
-// const f = () => {}
+const f = () => {}
 
-// new Promise()
+new Promise()
 
-// new Set()
+new Set()
 
-// class Test {}
+class Test {}
 
-// let arr = [1,2,3]
+let arr = [1,2,3]
 
-// arr.includes(2)
+arr.includes(2)
 
-import React from 'react'
-import ReactDom from 'react-dom'
+// import React from 'react'
+// import ReactDom from 'react-dom'
 
-class App extends React.Component {
-  render () {
-    return <div style={{color: 'red'}}>Hello React!</div>
-  }
-}
+// class App extends React.Component {
+//   render () {
+//     return <div style={{color: 'red'}}>Hello React!</div>
+//   }
+// }
 
-ReactDom.render(<App />, document.getElementById('react-root'))
+// ReactDom.render(<App />, document.getElementById('react-root'))
