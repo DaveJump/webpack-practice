@@ -90,6 +90,7 @@ const configCommon = {
   ],
   optimization: {
     splitChunks: {
+      maxInitialRequests: 5,
       cacheGroups: {
         antd: {
           test: module => /antd|ant-design/g.test(module.context),
