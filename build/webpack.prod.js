@@ -16,7 +16,14 @@ const configProd = {
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin(),
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true
+          }
+        },
+        extractComments: true
+      }),
       new OptimizeCSSAssetsPlugin({})
     ]
   },
