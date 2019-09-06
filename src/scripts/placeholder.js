@@ -3,7 +3,7 @@ const placeholder = () => {
   prevHolder && prevHolder.remove()
   let holder = document.createElement('div')
   holder.setAttribute('id', 'holder')
-  holder.innerText = 4800
+  holder.innerText = 1800
   document.body.appendChild(holder)
 }
 

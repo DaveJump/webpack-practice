@@ -5,14 +5,16 @@ const merge = require('webpack-merge')
 const configDev = {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
+  output: {
+    filename: 'js/[name].js',
+    chunkFilename: 'js/[name].js',
+    publicPath: '/'
+  },
   devServer: {
     contentBase: outputPath,
     open: true,
     hot: true,
     hotOnly: true
-  },
-  optimization: {
-    usedExports: true
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()

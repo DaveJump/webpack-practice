@@ -2,21 +2,21 @@ import createHeader from 'scripts/header'
 import createContent from 'scripts/content'
 import createIcon from 'scripts/icon'
 import placeholder from 'scripts/placeholder'
-// import counter from 'scripts/counter'
 
-import style from 'styles/icon.scss'
-import img from 'images/icon.png'
+import 'styles/icon.scss'
+import commonStyle from 'styles/common.scss'
 import 'fonts/iconfont.css'
+import img from 'images/icon.png'
 
 import React from 'react'
 import ReactDom from 'react-dom'
 
 import { add } from 'scripts/math'
 
-import _ from 'lodash'
+import { join } from 'lodash'
 
 let el = document.createElement('div')
-el.innerHTML = _.join([1, 2, 3], '***')
+el.innerHTML = join([1, 2, 3], '***')
 document.body.appendChild(el)
 
 import { DatePicker } from 'antd'
@@ -30,7 +30,7 @@ createIcon()
 
 let imgNode = document.createElement('img')
 imgNode.src = img
-imgNode.classList.add(style['img-icon'])
+imgNode.classList.add('img-icon')
 document.body.appendChild(imgNode)
 
 let textNode = document.createElement('i')
@@ -39,12 +39,14 @@ textNode.classList.add('iconfont', 'iconemoji-')
 document.body.appendChild(textNode)
 
 const count = () => {
-  return import('scripts/counter' /* webpackChunkName: "counter" */).then(({ default: counter }) => counter)
+  return import('scripts/counter' /* webpackChunkName: "counter" *//* webpackPrefetch: true */ ).then(({ default: counter }) => counter)
 }
 
 count().then(counter => {
   counter()
 })
+
+console.log(this, 'this___')
 
 placeholder()
 
@@ -57,7 +59,7 @@ if (module.hot) {
 }
 class App extends React.Component {
   render () {
-    return <div style={{color: 'red'}}>Hello React!</div>
+    return <div style={{color: commonStyle.successColor}}>Hello React!</div>
   }
 }
 
