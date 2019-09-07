@@ -13,14 +13,14 @@ import ReactDom from 'react-dom'
 
 import { add } from 'scripts/math'
 
-import { join } from 'lodash'
+import { join } from 'lodash/array'
 
 let el = document.createElement('div')
 el.innerHTML = join([1, 2, 3], '***')
 document.body.appendChild(el)
 
 import { DatePicker } from 'antd'
-import 'antd/dist/antd.css'
+// import 'antd/es/date-picker/style/css'
 
 add(1, 2)
 

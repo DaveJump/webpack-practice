@@ -12,6 +12,7 @@ const configDev = {
   },
   devServer: {
     contentBase: outputPath,
+    compress: true,
     open: true,
     hot: true,
     hotOnly: true

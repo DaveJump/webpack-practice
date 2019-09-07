@@ -2,6 +2,7 @@ const { configCommon, outputPath } = require('./webpack.common')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
 const merge = require('webpack-merge')
 
 const configProd = {
@@ -30,6 +31,11 @@ const configProd = {
   plugins: [
     new CleanWebpackPlugin({
       dry: false
+    }),
+    new CompressionPlugin({
+      filename: '[path].gz[query]',
+      test: /\.(js|css)(\?.*)?$/i,
+      deleteOriginalAssets: true
     })
   ]
 }
