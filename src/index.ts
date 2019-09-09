@@ -1,3 +1,5 @@
+import { join } from 'lodash'
+
 class Food {
   species: string
   flavor: string
@@ -16,8 +18,8 @@ class Food {
 
 let cattle = new Food('cattle')
 let cattleFlavor = cattle.getFlavor()
-console.log(`${cattle.species} is ${cattleFlavor}`)
+console.log(join([cattle.species, cattleFlavor], ' is '))
 
 let spinach = new Food('spinach')
 let spinachFlavor = spinach.getFlavor()
-console.log(`${spinach.species} is ${spinachFlavor}`)
+console.log(join([spinach.species, spinachFlavor], ' is '))

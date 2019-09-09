@@ -824,6 +824,11 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/lodash@^4.14.138":
+  version "4.14.138"
+  resolved "http://r.cnpmjs.org/@types/lodash/download/@types/lodash-4.14.138.tgz#34f52640d7358230308344e579c15b378d91989e"
+  integrity sha1-NPUmQNc1gjAwg0TlecFbN42RmJ4=
+
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
