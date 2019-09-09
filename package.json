@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config build/webpack.prod.js",
+    "build-sw": "cross-env USE_SW=true webpack --config build/webpack.prod.js",
     "dev-build": "cross-env NODE_ENV=development webpack --config build/webpack.dev.js",
+    "build-ts": "cross-env USE_TS=true webpack --config build/webpack.prod.js",
     "analyse": "webpack --config build/webpack.prod.js --profile --json > stats.json && webpack-bundle-analyzer stats.json",
     "start": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.dev.js",
     "serve": "node server.js",
@@ -22,6 +24,7 @@
     "lodash": "^4.17.15",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "typescript": "^3.6.2",
     "vue": "^2.6.10"
   },
   "devDependencies": {
@@ -48,13 +51,15 @@
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "terser-webpack-plugin": "^2.0.0",
+    "ts-loader": "^6.0.4",
     "url-loader": "^2.1.0",
     "webpack": "^4.39.3",
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-cli": "^3.3.7",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.8.0",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "workbox-webpack-plugin": "^4.3.1"
   },
   "browserslist": [
     "> 1%",

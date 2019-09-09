@@ -130,5 +130,6 @@ const configCommon = {
 
 module.exports = {
   outputPath,
+  resolve,
   configCommon
 }

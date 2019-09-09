@@ -70,3 +70,15 @@ ReactDom.render(
   </div>,
   document.getElementById('react-root')
 )
+
+if (USE_SW) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('serviceWorker registed.')
+      })
+      .catch(e => {
+        console.error('serviceWorker register failed.')
+      })
+  }
+}
