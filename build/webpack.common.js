@@ -1,6 +1,8 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const argv = require("yargs-parser")(process.argv.slice(2))
+const { mode: _mode } = argv
 const resolve = function (pattern) {
   return path.resolve(__dirname, pattern)
 }
@@ -9,7 +11,7 @@ const outputPath = resolve('../dist')
 const cssExtractLoaderOpt = {
   loader: MiniCssExtractPlugin.loader,
   options: {
-    hmr: process.env.NODE_ENV === 'development'
+    hmr: _mode === 'development'
   }
 }
 
@@ -50,9 +52,7 @@ const configCommon = {
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
+        use: ['babel-loader', 'eslint-loader']
       },
       {
         test: /\.(png|jpg|gif)$/,

@@ -7,4 +7,4 @@ const placeholder = () => {
   document.body.appendChild(holder)
 }
 
-export default placeholder 
+export default placeholder

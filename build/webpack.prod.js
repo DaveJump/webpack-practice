@@ -6,6 +6,8 @@ const TerserPlugin = require('terser-webpack-plugin')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
+const argv = require("yargs-parser")(process.argv.slice(2))
+const { ts: _ts, sw: _sw } = argv
 
 let plugins = [
   new CleanWebpackPlugin({
@@ -18,14 +20,14 @@ let plugins = [
   // })
 ]
 
-if (process.env.USE_SW) {
+if (_sw) {
   plugins.push(
     new WorkboxPlugin.GenerateSW({
       clientsClaim: true,
       skipWaiting: true
     }),
     new webpack.DefinePlugin({
-      USE_SW: true
+      'process.USE_SW': true
     })
   )
 }
@@ -56,7 +58,7 @@ const configProd = {
   plugins
 }
 
-if (process.env.USE_TS) {
+if (_ts) {
   Object.assign(configProd, {
     entry: {
       main: resolve('../src/index.ts')

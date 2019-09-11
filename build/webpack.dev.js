@@ -15,7 +15,12 @@ const configDev = {
     compress: true,
     open: true,
     hot: true,
-    hotOnly: true
+    hotOnly: true,
+    historyApiFallback: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
