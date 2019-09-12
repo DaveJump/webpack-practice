@@ -36,8 +36,8 @@ const configProd = {
   mode: 'production',
   // devtool: 'cheap-module-source-map',
   output: {
-    filename: 'js/[name]-[contenthash].js',
-    chunkFilename: 'js/[name]-[contenthash].js',
+    filename: 'js/[name]_[hash].js',
+    chunkFilename: 'js/[name]_[hash].js',
     publicPath: './',
     path: outputPath
   },

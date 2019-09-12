@@ -1,11 +1,13 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+const webpack = require('webpack')
+const fs = require('fs')
+const glob = require('glob')
 const argv = require("yargs-parser")(process.argv.slice(2))
-const { mode: _mode } = argv
-const resolve = function (pattern) {
-  return path.resolve(__dirname, pattern)
-}
+const { mode: _mode, split: _split } = argv
+const resolve = (...pattern) => path.resolve(__dirname, ...pattern)
 const outputPath = resolve('../dist')
 
 const cssExtractLoaderOpt = {
@@ -15,10 +17,61 @@ const cssExtractLoaderOpt = {
   }
 }
 
+const plugins = [
+  new MiniCssExtractPlugin({
+    filename: 'css/[name].css'
+  })
+]
+
+// multi-entries
+function getEntry () {
+  let entry = {}
+  glob.sync(resolve('../src/pages/*/index.js'))
+    .forEach(name => {
+      let entryKey = name.match(/\/src\/pages\/([^/]+)\/?.*$/)[1]
+      entry[entryKey] = name
+    })
+  return entry
+}
+
+const entry = getEntry()
+
+Object.keys(entry).forEach(entryName => {
+  plugins.push(
+    new HtmlWebpackPlugin({
+      template: `${entry[entryName].replace(/(\.js)$/, '.html')}`,
+      filename: `${entryName}.html`,
+      chunks: ['runtime', 'vendors', 'lodash', 'react', entryName]
+    })
+  )
+})
+
+// default to dll-reference
+if (!_split) {
+  const files = fs.readdirSync(resolve('../dll'))
+  files.forEach(file => {
+    if (/(.*\.dll)\.js$/.test(file)) {
+      plugins.push(
+        new AddAssetHtmlPlugin({
+          filepath: resolve('../dll', file),
+          outputPath: 'js/',
+          publicPath: './js/'
+        })
+      )
+    }
+    if (/(.*\.manifest)\.json$/.test(file)) {
+      plugins.push(
+        new webpack.DllReferencePlugin({
+          context: __dirname,
+          manifest: resolve('../dll', file)
+        })
+      )
+    }
+  })
+}
+
 const configCommon = {
-  entry: {
-    main: resolve('../src/index.js'),
-  },
+  entry,
   performance: false,
   module: {
     rules: [
@@ -50,7 +103,7 @@ const configCommon = {
         ]
       },
       {
-        test: /\.m?js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ['babel-loader', 'eslint-loader']
       },
@@ -79,21 +132,16 @@ const configCommon = {
     ]
   },
   resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
       images: resolve('../src/assets/images'),
       fonts: resolve('../src/assets/fonts'),
       styles: resolve('../src/assets/styles'),
-      scripts: resolve('../src/scripts')
+      scripts: resolve('../src/scripts'),
+      components: resolve('../src/components')
     }
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: resolve('../src/index.html')
-    }),
-    new MiniCssExtractPlugin({
-      filename: 'css/[name].css'
-    })
-  ],
+  plugins,
   optimization: {
     usedExports: true,
     runtimeChunk: {
@@ -102,20 +150,13 @@ const configCommon = {
     splitChunks: {
       maxInitialRequests: 5,
       cacheGroups: {
-        antd: {
+        /* antd: {
           test: module => /antd|ant-design/g.test(module.context),
           chunks: 'initial',
           name: 'antd',
           // filename: '[id].js',
           priority: 10
-        },
-        react: {
-          test: module => /react/g.test(module.context),
-          chunks: 'initial',
-          name: 'react',
-          // filename: '[id].js',
-          priority: 10
-        },
+        }, */
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           chunks: 'initial',
@@ -126,6 +167,27 @@ const configCommon = {
       }
     }
   }
+}
+
+if (_split) {
+  const splitRules = {
+    react: {
+      test: module => /react|react-dom/g.test(module.context),
+      chunks: 'initial',
+      name: 'react',
+      // filename: '[id].js',
+      priority: 10
+    },
+    lodash: {
+      test: module => /lodash/g.test(module.context),
+      chunks: 'initial',
+      name: 'lodash',
+      priority: 10
+    }
+  }
+  Object.entries(splitRules).forEach(rule => {
+    configCommon.optimization.splitChunks.cacheGroups[rule[0]] = rule[1]
+  })
 }
 
 module.exports = {

@@ -14,8 +14,8 @@ import { join } from 'lodash/array'
 import React from 'react'
 import ReactDom from 'react-dom'
 import { BrowserRouter, Route } from 'react-router-dom'
-import Home from './components/home'
-import Picker from './components/picker'
+import Home from 'components/home'
+import List from 'components/list'
 
 class App extends React.Component {
   render () {
@@ -23,7 +23,7 @@ class App extends React.Component {
       <BrowserRouter>
         <div>
           <Route path="/" exact component={Home} />
-          <Route path="/picker" component={Picker} />
+          <Route path="/list" component={List} />
         </div>
       </BrowserRouter>
     )
