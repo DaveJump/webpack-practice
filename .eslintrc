@@ -2,6 +2,7 @@
   "parser": "babel-eslint",
   "env": {
     "browser": true,
+    "commonjs": true,
     "es6": true,
     "node": true
   },
@@ -10,8 +11,10 @@
     "plugin:react/recommended"
   ],
   "parserOptions": {
+    "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
       "jsx": true
     }
   },
@@ -41,6 +44,7 @@
     "no-console": 0,
     "react/jsx-uses-react": "error",
     "react/prop-types": "error",
-    "prefer-const": 0
+    "prefer-const": 0,
+    "no-trailing-spaces": "error"
   }
 }
