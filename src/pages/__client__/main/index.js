@@ -7,7 +7,7 @@ import 'styles/icon.scss'
 import 'fonts/iconfont.css'
 import img from 'images/icon.png'
 
-import { add } from 'scripts/math'
+import { strAdd } from 'scripts/math'
 
 import { join } from 'lodash/array'
 
@@ -39,7 +39,7 @@ const el = document.createElement('div')
 el.innerHTML = join([1, 2, 3], '***')
 document.body.appendChild(el)
 
-add(1, 2)
+strAdd('9999', '123')
 
 createHeader()
 createContent()

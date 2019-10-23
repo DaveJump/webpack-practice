@@ -10,7 +10,7 @@ module.exports = {
     react: ['react', 'react-dom']
   },
   output: {
-    filename: '[name]_[hash].dll.js',
+    filename: '[name]_[chunkhash:8].dll.js',
     path: path.resolve(__dirname, '../dll'),
     library: libraryName
   },
@@ -18,7 +18,7 @@ module.exports = {
     new webpack.DllPlugin({
       context: __dirname,
       name: libraryName,
-      path: path.resolve(__dirname, '../dll/[name]_[hash].manifest.json')
+      path: path.resolve(__dirname, '../dll/[name]_[chunkhash:8].manifest.json')
     })
   ]
 }

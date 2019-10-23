@@ -6,14 +6,14 @@ const webpack = require('webpack')
 const fs = require('fs')
 const glob = require('glob')
 const argv = require("yargs-parser")(process.argv.slice(2))
-const { mode: _mode, split: _split } = argv
+const { mode: _MODE_, split: _SPLIT_, ssr: _SSR_ } = argv
 const resolve = (...pattern) => path.resolve(__dirname, ...pattern)
 const outputPath = resolve('../dist')
 
 const cssExtractLoaderOpt = {
   loader: MiniCssExtractPlugin.loader,
   options: {
-    hmr: _mode === 'development'
+    hmr: _MODE_ === 'development'
   }
 }
 
@@ -25,10 +25,12 @@ const plugins = [
 
 // multi-entries
 function getEntry () {
-  let entry = {}
-  glob.sync(resolve('../src/pages/*/index.js'))
+  const entry = {}
+  const dir = _SSR_ ? '__server__' : '__client__'
+  glob.sync(resolve(`../src/pages/${dir}/*/index.js`))
     .forEach(name => {
-      let entryKey = name.match(/\/src\/pages\/([^/]+)\/?.*$/)[1]
+      const reg = new RegExp(`/src/pages/${dir}/([^/]+)?.*$`)
+      const entryKey = name.match(reg)[1]
       entry[entryKey] = name
     })
   return entry
@@ -47,7 +49,7 @@ Object.keys(entry).forEach(entryName => {
 })
 
 // default to dll-reference
-if (!_split) {
+if (!_SPLIT_) {
   const files = fs.readdirSync(resolve('../dll'))
   files.forEach(file => {
     if (/(.*\.dll)\.js$/.test(file)) {
@@ -112,7 +114,7 @@ const configCommon = {
         use: {
           loader: 'url-loader',
           options: {
-            name: '[name]_[hash].[ext]',
+            name: '[name]_[hash:8].[ext]',
             outputPath: 'img/',
             limit: 20480
           }
@@ -144,33 +146,30 @@ const configCommon = {
   plugins,
   optimization: {
     usedExports: true,
-    runtimeChunk: {
-      name: 'runtime'
-    },
-    splitChunks: {
-      maxInitialRequests: 5,
-      cacheGroups: {
-        /* antd: {
-          test: module => /antd|ant-design/g.test(module.context),
-          chunks: 'initial',
-          name: 'antd',
-          // filename: '[id].js',
-          priority: 10
-        }, */
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'initial',
-          name: 'vendors',
-          priority: 2,
-          enforce: true
-        }
-      }
-    }
+    // runtimeChunk: {
+    //   name: 'runtime'
+    // }
   }
 }
 
-if (_split) {
+if (_SPLIT_) {
+  const splitChunks = {
+    maxInitialRequests: 5
+  }
   const splitRules = {
+    /* antd: {
+      test: module => /antd|ant-design/g.test(module.context),
+      chunks: 'initial',
+      name: 'antd',
+      // filename: '[id].js',
+      priority: 10
+    }, */
+    vendors: {
+      test: /[\\/]node_modules[\\/]/,
+      chunks: 'initial',
+      name: 'vendors',
+      priority: 2
+    },
     react: {
       test: module => /react|react-dom/g.test(module.context),
       chunks: 'initial',
@@ -185,9 +184,8 @@ if (_split) {
       priority: 10
     }
   }
-  Object.entries(splitRules).forEach(rule => {
-    configCommon.optimization.splitChunks.cacheGroups[rule[0]] = rule[1]
-  })
+  splitChunks.cacheGroups = splitRules
+  configCommon.optimization.splitChunks = splitChunks
 }
 
 module.exports = {
