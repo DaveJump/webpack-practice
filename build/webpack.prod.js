@@ -72,7 +72,7 @@ const configProd = {
 if (_TS_) {
   Object.assign(configProd, {
     entry: {
-      main: resolve('../src/index.ts')
+      main: resolve('./src/index.ts')
     },
     module: {
       rules: [

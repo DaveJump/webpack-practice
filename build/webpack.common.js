@@ -7,9 +7,10 @@ const webpack = require('webpack')
 const fs = require('fs')
 const glob = require('glob')
 const argv = require("yargs-parser")(process.argv.slice(2))
-const { mode: _MODE_, split: _SPLIT_, ssr: _SSR_ } = argv
-const resolve = (...pattern) => path.resolve(__dirname, ...pattern)
-const outputPath = resolve('../dist')
+const { mode: _MODE_, dll: _DLL_, ssr: _SSR_ } = argv
+const projectRoot = process.cwd()
+const resolve = (...pattern) => path.resolve(projectRoot, ...pattern)
+const outputPath = resolve('./dist')
 
 const cssExtractLoaderOpt = {
   loader: MiniCssExtractPlugin.loader,
@@ -39,7 +40,7 @@ const plugins = [
 function getEntry () {
   const entry = {}
   const dir = _SSR_ ? '__server__' : '__client__'
-  glob.sync(resolve(`../src/pages/${dir}/*/index.js`))
+  glob.sync(resolve(`./src/pages/${dir}/*/index.js`))
     .forEach(name => {
       const reg = new RegExp(`/src/pages/${dir}/([^/]+)?.*$`)
       const entryKey = name.match(reg)[1]
@@ -59,30 +60,6 @@ Object.keys(entry).forEach(entryName => {
     })
   )
 })
-
-// default to dll-reference
-if (!_SPLIT_) {
-  const files = fs.readdirSync(resolve('../dll'))
-  files.forEach(file => {
-    if (/(.*\.dll)\.js$/.test(file)) {
-      plugins.push(
-        new AddAssetHtmlPlugin({
-          filepath: resolve('../dll', file),
-          outputPath: 'js/',
-          publicPath: './js/'
-        })
-      )
-    }
-    if (/(.*\.manifest)\.json$/.test(file)) {
-      plugins.push(
-        new webpack.DllReferencePlugin({
-          context: __dirname,
-          manifest: resolve('../dll', file)
-        })
-      )
-    }
-  })
-}
 
 const configCommon = {
   entry,
@@ -121,20 +98,41 @@ const configCommon = {
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
-      images: resolve('../src/assets/images'),
-      fonts: resolve('../src/assets/fonts'),
-      styles: resolve('../src/assets/styles'),
-      scripts: resolve('../src/scripts'),
-      components: resolve('../src/components')
+      images: resolve('./src/assets/images'),
+      fonts: resolve('./src/assets/fonts'),
+      styles: resolve('./src/assets/styles'),
+      scripts: resolve('./src/scripts'),
+      components: resolve('./src/components')
     }
   },
-  plugins,
   optimization: {
     usedExports: true
   }
 }
 
-if (_SPLIT_) {
+// default to dll-reference
+if (_DLL_) {
+  const files = fs.readdirSync(resolve('./dll'))
+  files.forEach(file => {
+    if (/(.*\.dll)\.js$/.test(file)) {
+      plugins.push(
+        new AddAssetHtmlPlugin({
+          filepath: resolve('./dll', file),
+          outputPath: 'js/',
+          publicPath: './js/'
+        })
+      )
+    }
+    if (/(.*\.manifest)\.json$/.test(file)) {
+      plugins.push(
+        new webpack.DllReferencePlugin({
+          context: projectRoot,
+          manifest: resolve('./dll', file)
+        })
+      )
+    }
+  })
+} else {
   const splitChunks = {
     maxInitialRequests: 5
   }
@@ -169,6 +167,8 @@ if (_SPLIT_) {
   splitChunks.cacheGroups = splitRules
   configCommon.optimization.splitChunks = splitChunks
 }
+
+configCommon.plugins = plugins
 
 if (_SSR_) {
   configCommon.module.rules.push(
