@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const webpack = require('webpack')
 const fs = require('fs')
 const glob = require('glob')
@@ -20,7 +21,18 @@ const cssExtractLoaderOpt = {
 const plugins = [
   new MiniCssExtractPlugin({
     filename: 'css/[name].css'
-  })
+  }),
+  new FriendlyErrorsPlugin(),
+  function() {
+    // catching errors
+    this.hooks.done.tap('done', stats => {
+      const { errors } = stats.compilation
+      if (errors && errors.length && process.argv.indexOf('--watch') < 0) {
+        // do something
+        process.exit(/*1*/)
+      }
+    })
+  }
 ]
 
 // multi-entries
@@ -78,33 +90,6 @@ const configCommon = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [
-          cssExtractLoaderOpt,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          'postcss-loader'
-        ]
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          cssExtractLoaderOpt,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 2
-            }
-          },
-          'postcss-loader',
-          'sass-loader'
-        ]
-      },
-      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ['babel-loader', 'eslint-loader']
@@ -145,10 +130,7 @@ const configCommon = {
   },
   plugins,
   optimization: {
-    usedExports: true,
-    // runtimeChunk: {
-    //   name: 'runtime'
-    // }
+    usedExports: true
   }
 }
 
@@ -186,6 +168,52 @@ if (_SPLIT_) {
   }
   splitChunks.cacheGroups = splitRules
   configCommon.optimization.splitChunks = splitChunks
+}
+
+if (_SSR_) {
+  configCommon.module.rules.push(
+    {
+      test: /\.css$/,
+      use: 'ignore-loader'
+    },
+    {
+      test: /\.scss$/,
+      use: 'ignore-loader'
+    }
+  )
+} else {
+  configCommon.module.rules.push(
+    {
+      test: /\.css$/,
+      use: [
+        cssExtractLoaderOpt,
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1
+          }
+        },
+        'postcss-loader'
+      ]
+    },
+    {
+      test: /\.scss$/,
+      use: [
+        cssExtractLoaderOpt,
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 2
+          }
+        },
+        'postcss-loader',
+        'sass-loader'
+      ]
+    }
+  )
+  configCommon.optimization.runtimeChunk = {
+    name: 'runtime'
+  }
 }
 
 module.exports = {

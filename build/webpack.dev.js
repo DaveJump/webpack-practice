@@ -20,7 +20,8 @@ const configDev = {
     overlay: {
       warnings: false,
       errors: true
-    }
+    },
+    stats: 'errors-only'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()

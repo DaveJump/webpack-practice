@@ -47,6 +47,7 @@ if (_SSR_) {
 const configProd = {
   mode: 'production',
   // devtool: 'cheap-module-source-map',
+  // stats: 'errors-only',
   output,
   optimization: {
     minimize: true,
