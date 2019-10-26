@@ -6,6 +6,7 @@ import placeholder from 'scripts/placeholder'
 import 'styles/icon.scss'
 import 'fonts/iconfont.css'
 import img from 'images/icon.png'
+import bigBg from 'images/big/bg.jpg'
 
 import { strAdd } from 'scripts/math'
 
@@ -31,7 +32,11 @@ class App extends React.Component {
 }
 
 ReactDom.render(
-  <App />,
+  <div>
+    <App />
+    <br />
+    <img src={ bigBg } style={{ width: '500px' }} />
+  </div>,
   document.getElementById('react-root')
 )
 

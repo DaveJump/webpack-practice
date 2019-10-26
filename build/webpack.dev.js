@@ -1,6 +1,7 @@
 const { configCommon, outputPath } = require('./webpack.common')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 const configDev = {
   mode: 'development',
@@ -21,10 +22,12 @@ const configDev = {
       warnings: false,
       errors: true
     },
-    stats: 'errors-only'
+    stats: 'errors-only',
+    quiet: true
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new FriendlyErrorsPlugin()
   ]
 }
 

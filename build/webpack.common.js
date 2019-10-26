@@ -1,12 +1,12 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const PurgecssPlugin = require('purgecss-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const webpack = require('webpack')
 const fs = require('fs')
 const glob = require('glob')
-const argv = require("yargs-parser")(process.argv.slice(2))
+const argv = require('yargs-parser')(process.argv.slice(2))
 const { mode: _MODE_, dll: _DLL_, ssr: _SSR_ } = argv
 const projectRoot = process.cwd()
 const resolve = (...pattern) => path.resolve(projectRoot, ...pattern)
@@ -23,7 +23,9 @@ const plugins = [
   new MiniCssExtractPlugin({
     filename: 'css/[name].css'
   }),
-  new FriendlyErrorsPlugin(),
+  new PurgecssPlugin({
+    paths: glob.sync(`${resolve('./src')}/**/*`, { nodir: true })
+  }),
   function() {
     // catching errors
     this.hooks.done.tap('done', stats => {
@@ -37,15 +39,14 @@ const plugins = [
 ]
 
 // multi-entries
-function getEntry () {
+function getEntry() {
   const entry = {}
   const dir = _SSR_ ? '__server__' : '__client__'
-  glob.sync(resolve(`./src/pages/${dir}/*/index.js`))
-    .forEach(name => {
-      const reg = new RegExp(`/src/pages/${dir}/([^/]+)?.*$`)
-      const entryKey = name.match(reg)[1]
-      entry[entryKey] = name
-    })
+  glob.sync(resolve(`./src/pages/${dir}/*/index.js`)).forEach(name => {
+    const reg = new RegExp(`/src/pages/${dir}/([^/]+)?.*$`)
+    const entryKey = name.match(reg)[1]
+    entry[entryKey] = name
+  })
   return entry
 }
 
@@ -69,18 +70,44 @@ const configCommon = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader']
+        use: ['babel-loader?cacheDirectory=true', 'eslint-loader']
       },
       {
         test: /\.(png|jpg|gif)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            name: '[name]_[hash:8].[ext]',
-            outputPath: 'img/',
-            limit: 20480
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]_[hash:8].[ext]',
+              outputPath: 'img/',
+              limit: 20480
+            }
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 40
+              },
+              // optipng.enabled: false will disable optipng
+              optipng: {
+                enabled: false
+              },
+              pngquant: {
+                quality: [0.65, 0.9],
+                speed: 4
+              },
+              gifsicle: {
+                interlaced: false
+              },
+              // the webp option will enable WEBP
+              webp: {
+                quality: 75
+              }
+            }
           }
-        }
+        ]
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
@@ -112,12 +139,14 @@ const configCommon = {
 
 // default to dll-reference
 if (_DLL_) {
-  const files = fs.readdirSync(resolve('./dll'))
+  const dllPath = './build/lib'
+  const files = fs.readdirSync(resolve(dllPath))
+
   files.forEach(file => {
     if (/(.*\.dll)\.js$/.test(file)) {
       plugins.push(
         new AddAssetHtmlPlugin({
-          filepath: resolve('./dll', file),
+          filepath: resolve(dllPath, file),
           outputPath: 'js/',
           publicPath: './js/'
         })
@@ -126,8 +155,8 @@ if (_DLL_) {
     if (/(.*\.manifest)\.json$/.test(file)) {
       plugins.push(
         new webpack.DllReferencePlugin({
-          context: projectRoot,
-          manifest: resolve('./dll', file)
+          context: __dirname,
+          manifest: resolve(dllPath, file)
         })
       )
     }
